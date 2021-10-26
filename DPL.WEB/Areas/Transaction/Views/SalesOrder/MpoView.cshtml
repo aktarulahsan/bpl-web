@@ -1,5 +1,4 @@
-﻿
-@{
+﻿@{
     ViewBag.Title = "MpoView";
     Layout = "~/Views/Shared/MpoLayout.cshtml";
 }
@@ -115,13 +114,13 @@
                         <label style="font-size: 15px;"> Bill Done </label>
                     </div>
                 </div>
-     
+
 
             </div>
         </div>
     </div>
 </div>
-<div class="modal fade bd-example-modal-lg"  role="dialog" data-backdrop="static" aria-labelledby="myLargeModalLabel exampleModalCenterTitle" aria-="true" id="itemModal">
+<div class="modal fade bd-example-modal-lg" role="dialog" data-backdrop="static" aria-labelledby="myLargeModalLabel exampleModalCenterTitle" aria-="true" id="itemModal">
 
 
     <div class="modal-dialog modal-xl bd-example-modal-lg ">
@@ -497,6 +496,8 @@
     var dblTotalAmt = 0;
 
     var gItemList = [];
+
+    var tempDataList = [];
 
     var type = 0;
     var strOrderNo = "";
@@ -1096,7 +1097,7 @@
                                          return '<button class="btn btn-info fontsize  print-sloat-ak">   <i class="fa fa-print"></i></button>';
                                      }
                                  },
-                          
+
             ],
 
             "responsive": true,
@@ -1164,6 +1165,13 @@
                     selectdata = data;
                     console.log('hello edit dddeeeee', selectdata);
                     edit(selectdata);
+                    //that.salesss(data);
+                    //that.rerender();
+                });
+                $(row).find(".delete-sloat-ak").click(function () {
+                    selectdata = data;
+                    console.log('hello Delete data', selectdata);
+                    deleteItemsById(selectdata.lngSlNo)
                     //that.salesss(data);
                     //that.rerender();
                 });
@@ -1348,30 +1356,32 @@
                 addItemList =[];
                 addItemList= data;
                 gItemList = data;
-                //console.log('hello edit', addItemList);
+                tempDataList = [];
+                tempDataList = data;
+
+
+
+                console.log('hello edit',tempDataList);
                 //console.log('hello edit New', data);
-                showItemview(data);
+                //showItemview(data);
+                showItemview();
             }
         });
     }
+    function deleteItem(itemName) {
+        //console.log("before delete"+tempDataList.length);
 
-    function deleteitem(data) {
-        $.each(gItemList, function (key, item) {
+        for (i = 0; i < tempDataList.length; i++) {
+            if (tempDataList[i].strItemName == itemName) {
 
-            $.each(gItemList[0], function (key1, item1) {
+                tempDataList.splice(i, 1);
+            }
 
-                var a = $('#ddlStockItemlist').val();
-                if (item1.strItemName == a) {
-                    swal("Adding Failed!", "You Alrady Add This Item.", "warning");
-                    return
-                } else {
-                    itemRate('0003', $('#ddlStockGrouplist').val(), $('#ddlStockItemlist').val(), order_date, $('#intQty').val(), $('#responsid2').val());
-                }
-
-            });
-        });
-
+        }
+        //console.log("after delete" + tempDataList.length);
+        showItemview();
     }
+
 
     function locationListByItemId(id) {
 
@@ -1574,7 +1584,10 @@
                            gItemList.push(data);
 
 
-                        showItemview(data);
+                        //showItemview(data);
+
+                           tempDataList = data;
+                           showItemview();
                     }
 
                 });
@@ -1589,20 +1602,20 @@
          //return type;
     }
 
-    function showItemview(gItemList) {
+    function showItemview() {
         //TotalQty(gItemList);
-
+        console.log(tempDataList);
 
         intItemQty = 0;
         totalAmount = 0;
         totalcommision = 0;
         totalnetamount = 0;
 
-        this.detailsList = gItemList;
+        this.detailsList = this.tempDataList;
 
         //calculateData(detailsList);
         $('#itemDatatable').DataTable({
-            data: gItemList,
+            data: this.tempDataList,
             "bDestroy": true,
             "dataSrc": function (response) {
                 response.draw = response.draw;
@@ -1668,10 +1681,10 @@
 
 
 
-                intItemQty += data.intItemQty;
-                totalAmount =totalAmount + data.dblTotalAmount;
-                totalcommision =totalcommision + data.dblCommitionVal;
-                totalnetamount = totalnetamount + data.dblItemNetVal;
+                //intItemQty += data.intItemQty;
+                //totalAmount =totalAmount + data.dblTotalAmount;
+                //totalcommision =totalcommision + data.dblCommitionVal;
+                //totalnetamount = totalnetamount + data.dblItemNetVal;
 
 
                 document.getElementById("qtyTotal").innerHTML = intItemQty;
@@ -1695,8 +1708,8 @@
                 });
                 $(row).find(".delete-sloat-ak").click(function () {
                     selectlocationItem = data;
-                    //console.log('hello kkk', selectlocationItem);
-                    deleteitem(selectlocationItem.strItemName)
+                    console.log('hello kkk', selectlocationItem);
+                    deleteItem(selectlocationItem.strItemName);
 
                     //that.salesss(data);
                     //that.rerender();
@@ -1738,7 +1751,8 @@
             strBranchName: $('#responsid2').val(),
             strCustomer: $('#idcustomer').val(),
             strLedgerName: $('#ID_Mpo').val(),
-            strOrderNo: $('#ID_OrderNumber').val(),
+            //strOrderNo: $('#ID_OrderNumber').val(),
+            strOrderNo: 'SO0001' + $('#ID_OrderNumber').val(),
             strOrderDate: $('#OrDate').val(),
             strLocation: $('#ddllocationid').val(),
             dblTotalAmount: $('#txtTotalAmount').text(),
@@ -1778,7 +1792,7 @@
 
     function clearFromData() {
 
-        
+
         //strBranchName: $('#responsid2').val(),
         //strCustomer: $('#idcustomer').val(),
         //strLedgerName: $('#ID_Mpo').val(),
@@ -1792,11 +1806,13 @@
         //dblNetQty: $('#qtyTotal').text(),
         //detailsList: this.detailsList,
 
-
+        console.log('Clear','ok')
         //$('#idcustomer').val('');
         $('#idcustomer').val();
-        showItemview([]);
-        //$('#btnAddlocation').text("Add");
+        tempDataList = [];
+        $('#btnsaveOrder').val("Save");
+        showItemview();
+
         //$('#idcustomer').text("");
         //$('#responsid3').text("");
         ////$('#ID_OrderNumber').text("");
@@ -1843,7 +1859,7 @@
 
             strBranchName: $('#responsid2').val(),
             strCustomer: $('#idcustomer').val(),
-            strLedgerName: $('#responsid3').val(),
+            strLedgerName: $('#ID_Mpo').val(),
             strOrderNo: 'SO0001' + $('#ID_OrderNumber').val(),
             strOrderDate: $('#OrDate').val(),
             strLocation: $('#ddllocationid').val(),
