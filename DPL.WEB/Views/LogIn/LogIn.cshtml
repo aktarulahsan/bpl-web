@@ -1,0 +1,87 @@
+﻿@model DPL.WEB.Models.LogInMo
+
+@{
+    ViewBag.Title = "LogIn";
+}
+
+@{
+    Layout = "~/Views/Shared/_LoginLayout.cshtml";
+}
+
+ 
+@*<link href="~/Content/bootstrap.min.css" rel="stylesheet" />*@
+
+<style>
+    .MakeWide {
+        width: 100%;
+        height: 40px;
+        background-color: #ffffff;
+        border: 2px solid #d1c9c9;
+    }
+</style>
+
+<div id="mainContent">
+    <section class="container">
+
+        <div class="innerContainer">
+
+            <div class="row">
+                <div id="myWizard" class="formArea LRmargin">
+                    @using (Html.BeginForm())
+                    {
+                        @Html.AntiForgeryToken()
+                        <div class="logo col-sm-12 text-center col-md-12 "> <img alt="" src="~/Images/Deeplaid.ico" /></div>
+                        <div class="col-xs-12">
+                            <div class="loginPage panel panel-info">
+                                <div class="form-group">
+                                    <span class=""><i class="glyphicon glyphicon-user"></i> User</span>
+                                    @Html.TextBoxFor(m => m.username, new { @class = "form-control", autocomplete = "off" })
+                                    @Html.ValidationMessageFor(m => m.username)
+                                </div>
+                                <div class="form-group">
+                                    <span class=""><i class="glyphicon glyphicon-lock"></i> Password</span>
+                                    @Html.PasswordFor(m => m.password, new { @class = "form-control", autocomplete = "off" })
+                                    @Html.ValidationMessageFor(m => m.password)
+
+                                </div>
+                                <div class="form-group">
+                                    <div>
+                                        <span class=""><i class="glyphicon glyphicon-envelope"></i> User Level</span>
+                                    </div>
+                                    <div class="col-11">
+                                        @Html.DropDownListFor(m => m.userLevel, new List<SelectListItem> {
+                                                       new SelectListItem { Value = "0" , Text = "Admin" },
+                                                       new SelectListItem { Value = "1" , Text = "User" },
+                                                       new SelectListItem { Value = "2" , Text = "MPO" },
+                                                       new SelectListItem { Value = "3" , Text = "Area" },
+                                                       new SelectListItem { Value = "4" , Text = "Division" },
+                                                        },
+                                      new { @class = "MakeWide" })
+                                    </div>
+
+                                </div>
+
+                                <div class="form-group">
+                                    <input id="BtnLogin" type="submit" class="btn btn-success btn-pressure" name="BtnLogin" value="Login" />
+                                    <input id="BtnReset" type="reset" class="btn btn-info btn-pressure" name="BtnReset" value="Reset" />
+
+
+                                </div>
+
+
+                            </div>
+                        </div>
+
+                    }
+
+                    <div class="clear"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<script>
+
+
+</script>

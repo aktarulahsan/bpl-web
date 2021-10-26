@@ -1,0 +1,68 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>Deeplaid Sales Order</title>
+    @*<link href="~/Images/dotnetsaifavicon.ico" rel="shortcut icon" type="image/x-icon" />*@
+    <meta name="viewport" content="width=device-width" />
+    @*<link href="~/Content/Site.css" rel="stylesheet" />*@
+
+    <link href="~/Content/SiteLogin.css" rel="stylesheet" />
+ 
+    <link href="~/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <style>
+        body, html {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            display: table;
+        }
+
+        body {
+            display: table-cell;
+            vertical-align: middle;
+        }
+
+        form {
+            display: table; /* shrinks to fit conntent */
+            margin: auto;
+        }
+
+
+
+    </style>
+
+
+</head>
+<body>
+    <header>
+
+        <div class="col-md-12 col-sm-12">
+            <section id="login"></section>
+        </div>
+
+    </header>
+    <div id="body">
+        <div class="container">
+            @RenderSection("featured", required: false)
+            <section class="">
+                @RenderBody()
+            </section>
+        </div>
+    </div>
+    <footer>
+        <div class="container">
+            <div class="text-center footer">
+                @*Developed By <a href="MISIT@gmail.com">MIS</a>
+                    Designed By <a href="MISIT@gmail.com">MIS</a>*@
+                Developed By <a href="MISIT@gmail.com">Deeplaid MID & IT</a>
+                @*Designed By <a href="MISIT@gmail.com">MIS</a>*@
+            </div>
+        </div>
+    </footer>
+
+    @* @Scripts.Render("~/bundles/jquery")*@
+    @RenderSection("scripts", required: false)
+</body>
+</html>
