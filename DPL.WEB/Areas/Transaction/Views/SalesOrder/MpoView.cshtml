@@ -1,4 +1,5 @@
-﻿@{
+﻿
+@{
     ViewBag.Title = "MpoView";
     Layout = "~/Views/Shared/MpoLayout.cshtml";
 }
@@ -39,6 +40,7 @@
                     <button title="New Order"
                             style="margin: 2px;"
                             class="btn btn-success"
+                            onclick="btnNewOrder();"
                             data-toggle="modal" id="myBtn" data-target=".bd-example-modal-lg">
                         <i class="fa fa-plus-circle" aria-="true"></i>&nbsp;New Order
                     </button>
@@ -46,7 +48,8 @@
                 <div class="btnSearch">
                     <button title="New Order"
                             style="margin: 2px;"
-                            class="btn btn-success">
+                            class="btn btn-success"
+                            >
                         <i class="fa fa-search" aria-="true"></i>&nbsp;Search
                     </button>
                 </div>
@@ -76,6 +79,16 @@
                     </button>
                 </div>
 
+
+                <div class="btnApprove">
+                    <button title="Commission Cal."
+                            style="margin: 2px;"
+                            class="btn btn-success"
+                            onclick="App();">
+                        <i class="fa fa-calculator" aria-="true"></i>&nbsp;Apprpve.
+                    </button>
+                </div>
+
                 <div class="btnExport" hidden>
                     <select id="exportOption">
                         <option value="Pdf">Pdf</option>
@@ -90,37 +103,42 @@
         <div class="col-lg-6">
             <div class="row">
                 <div class="col-lg-2">
-                    <div class="row">
+                    <div class="row toggle-vis">
                         <input type="radio" id="idneworder" checked style="height:18px;  width:35px; margin-top:5px" class="checkmarkl" name="rbtnname" value="NewInvoice" onclick="rbtnidNeworder();" />
                         <label style="font-size:15px;"> New Order</label>
                     </div>
                 </div>
                 <div class="col-lg-2">
-                    <div class="row">
+                    <div class="row toggle-vis" data-column="14">
+                        
                         @*<input type="radio" id="idZhApprove" style="height:20px; width:35px;"  name=" rbtnname" value="ZhApprove" onclick="rbtnidZhApprove();" />*@
-                        <input type="radio" id="idZhApprove" style="height: 18px; width: 35px; margin-top: 5px" class="checkmarkl" name="rbtnname" value="ZhApprove" onclick="rbtnidZhApprove();" />
+                        <input type="radio" id="idZhApprove" style="height: 18px; width: 35px; margin-top: 5px" class="checkmarkl toggle-vis" data-column="13" name="rbtnname" value="ZhApprove" onclick="rbtnidZhApprove();" />
+                        @*<a class="toggle-vis" data-column="13">ZH Approve</a>*@
                         <label style="font-size:15px;">ZH Approve</label>
                     </div>
                 </div>
                 <div class="col-lg-2">
-                    <div class="row">
+                    <div class="row toggle-vis">
                         <input type="radio" id="idReturnOrder" style="height: 18px; width: 35px; margin-top: 5px" class="checkmarkl" name="rbtnname" value="ReturnOrder" onclick="rbtnidReturnOrder();" />
                         <label style="font-size:15px;">Return Order</label>
                     </div>
                 </div>
                 <div class="col-lg-2">
-                    <div class="row">
+                    <div class="row toggle-vis">
                         <input type="radio" id="idBillDone" style="height: 18px; width: 35px; margin-top: 5px" class="checkmarkl" name="rbtnname" value="BillDone" onclick="rbtnidbilldone()" />
                         <label style="font-size: 15px;"> Bill Done </label>
                     </div>
                 </div>
-
+     
 
             </div>
         </div>
     </div>
+    @*<div>
+        Toggle column: <a class="toggle-vis" data-column="0">Name</a> - <a class="toggle-vis" data-column="1">Position</a> - <a class="toggle-vis" data-column="2">Office</a> - <a class="toggle-vis" data-column="3">Age</a> - <a class="toggle-vis" data-column="4">Start date</a> - <a class="toggle-vis" data-column="5">Salary</a>
+    </div>*@
 </div>
-<div class="modal fade bd-example-modal-lg" role="dialog" data-backdrop="static" aria-labelledby="myLargeModalLabel exampleModalCenterTitle" aria-="true" id="itemModal">
+<div class="modal fade bd-example-modal-lg"  role="dialog" data-backdrop="static" aria-labelledby="myLargeModalLabel exampleModalCenterTitle" aria-="true" id="itemModal">
 
 
     <div class="modal-dialog modal-xl bd-example-modal-lg ">
@@ -144,7 +162,8 @@
                             style=" color: white;"
                             data-dismiss="modal"
                             aria-label="Close"
-                            (click)="bsModalRef.hide()">
+                            onclick="clearFromData()"
+                            (click)=" bsmodalref.hide()">
                         <span>&times;</span>
                     </button>
                 </div>
@@ -187,7 +206,7 @@
                                     <p style="text-align: right; font-size: 15px;">Order Number:</p>
                                 </div>
                                 <div class="col-sm-4 " style="margin: 5px;">
-                                    <input type="text" readonly class="form-control" id="ID_OrderNumber" value="@ViewBag.RefNo" placeholder="Order Number" />
+                                    <input type="text"  class="form-control" id="ID_OrderNumber" value="@ViewBag.RefNo" placeholder="Order Number" />
 
                                 </div>
                             </div>
@@ -381,7 +400,7 @@
                                         <h6>Item Qty:</h6>
                                     </div>
                                     <div>
-                                        <h5 id="qtyTotal" style="text-align: left; font-size: medium"></h5>
+                                        <h5 id="qtyTotal2" style="text-align: left; font-size: medium"></h5>
                                     </div>
                                 </div>
                             </div>
@@ -432,6 +451,8 @@
 
                 <div class="modal-footer">
                     @*<button type="submit" class="btn btn-outline-success " onclick="saveOrUpdates()">Submit</button>*@
+
+         
                     <span><input type="button" class="btn btn-primary" id="btnsaveOrder" onclick="saveOrUpdates();" value="Save"></input></span>
                     <button type="button" class="btn btn-danger" data-dismiss="modal" onclick="clearFromData();" (click)="bsModalRef.hide()">Cancel</button>
                 </div>
@@ -444,6 +465,16 @@
     <table id="datatable4" class="table-bordered" style="width:100%"></table>
 </div>
 <script>
+
+
+
+
+ 
+ 
+
+
+
+
 
     //function exportTo() {
     //    var ddlVal = $('#exportOption').val();
@@ -544,7 +575,40 @@
     var totalcount =0;
     var totalAmount =0;
     var totalcommision =0;
-    var totalnetamount =0;
+    var totalnetamount = 0;
+
+    var checkboxColamstatus = true;
+    var editColamStatus = true;
+    var deleteColamStatus = true;
+    var CreditLimitColamStatus = true;
+
+
+
+
+
+    
+
+    function btnNewOrder() {
+
+        orderdate();
+
+
+        document.getElementById('ID_OrderNumber').value = "";
+
+        //var idtxtOrder = $("#ID_OrderNumber");
+        //idtxtOrder.html('');
+        $("#ID_OrderNumber").val = "";
+        $.ajax({
+            url: '@Url.Action("LastOrderNO")',
+            datatype: "json",
+         
+            success: function (data) {
+                console.log(data);
+                document.getElementById('ID_OrderNumber').value = data;
+            }
+        })
+    }
+
 
     function changeFunc() {
 
@@ -575,6 +639,12 @@
     }
 
 
+    var table;
+
+
+
+
+
     $(document).ready(function () {
         //swal({
         //    title: "Sorry!",
@@ -582,63 +652,19 @@
         //    type: "warning",
         //    timer: 6000
         //});
-        @*$("#ddlStockGrouplist").on("change", function () {
-            //selectStockGroup = $(this).val();
-            //selectLocation = $("#ddllocationid").val();
-            var selectStockGroup = document.getElementById("ddlStockGrouplist").value;
-            console.log("Group name is:");
-            var selectLocation = document.getElementById("ddllocationid").value;
-            //alert(selectLocation)
-            alert("ok");
-      var ddlStockItemlist = $("#ddlStockItemlist");
-            $.ajax({
-                url: '@Url.Action("gFillStockItemNew")',
-                datatype: "json",
-                data: {
-                    strDeComID: "",
-                    vstrRoot: selectStockGroup,
-                    vstrGodown: selectLocation
-                },
-                success: function (data) {
-                    ddlStockItemlist.html('');
-                    ddlStockItemlist.append($('<option value=--Select One-->--Select One--</option>'));
-                    $.each(data, function (id, option) {
-                        ddlStockItemlist.append($('<option value="' + option.strItemName + '">' + option.strItemName + '</option>'));
-                        //ddlResponsid3.append($('<option></option>').val(option.strLedgerName).html(option.strLedgerName));
-                    });
 
-                }
-            })
-
-            });*@
-        //rtbtnStatus();
-
-        //document.getElementById("idneworder").checked = true;
-        //document.getElementById("checkmarkl").checked;
+      
+     
         document.getElementById("Totalitem").innerHTML = 0;
-        document.getElementById("qtyTotal").innerHTML = 0;
+        //document.getElementById("qtyTotal").innerHTML = 0;
         document.getElementById("txtTotalAmount").innerHTML = 0;
         document.getElementById("txtCommAmount").innerHTML = 0;
         document.getElementById("txtnetAmount").innerHTML = 0;
-        //document.getElementById("Totalitem").innerHTML = "Total Item : " + 0;
+       
         $("#responsid2").select2({ "width": '100%' });
         $("#responsid2").focus();
         $("#responsid3").select2({ "width": '100%' });
-        //$("#responsid3").focus();
-
-        //function myFunction() {
-        //document.getElementById('OrDate').value = formatDate(Date, 'mm/dd/yy');
-
-
-       //  var _dt = new Date();
-
-       //  console.log(new Date(_dt).toLocaleString().split(',')[0]);
-
-       ////var datev=  (new Date(date).toLocaleString().split(',')[0]);
-       // //document.getElementById('OrDate').value = new Date(date).toLocaleString('en-US').split(',')[0];
-       //  console.log([_dt.getDate(), _dt.getMonth(), _dt.getFullYear()]);
-       //  document.getElementById('OrDate').value = [_dt.getDate(), _dt.getMonth()+1, _dt.getFullYear()].join('/')
-
+        
 
         orderdate();
 
@@ -649,101 +675,6 @@
         $("#ddlStockItemlist").select2({ "width": '100%' });
 
 
-
-
-
-
-        //showItemview();
-
-        @*$("#responsid2").on("change", function () {
-            selectBranch = $(this).val();
-            //alert("branch 123")
-            //alert(selectBranch)
-            var ddlResponsid3 = $("#responsid3");
-            $.ajax({
-                url: '@Url.Action("mGetMPO")',
-                datatype: "json",
-                data: {
-                    responseId: selectBranch
-                },
-                success: function (data) {
-                   // alert("1");
-                    ddlResponsid3.html('');
-                    ddlResponsid3.append($('<option value=--Select One-->--Select One--</option>'));
-                    $.each(data, function (id, option) {
-
-
-                        ddlResponsid3.append($('<option value="' + option.strTC + '">' + option.strLedgerName + '</option>'));
-                        //ddlResponsid3.append($('<option></option>').val(option.strLedgerName).html(option.strLedgerName));
-
-                    });
-                    //alert($('#strTC').val());
-                    $('#responsid3').val(selectdata.strTC);
-                    //alert("selectd", $('#responsid3').val(selectdata.strTC))
-                    //$('#responsid3').val(this.aktar);
-                    $('#responsid3').trigger('change');
-                }
-            });
-            //selectBranch = $(this).val();
-            //alert("<POI")
-            var selectBranch = document.getElementById("ID_Branch").value;
-            var ddllocationid3 = $("#ddllocationid");
-            $.ajax({
-                url: '@Url.Action("mGetLocation")',
-                datatype: "json",
-                data: {
-                    strBranchName: selectBranch
-                },
-                success: function (data) {
-                    ddllocationid3.html('');
-                    ddllocationid3.append($('<option value=--Select One-->--Select One--</option>'));
-                    $.each(data, function (id, option) {
-                        ddllocationid3.append($('<option value="' + option.strLocation + '">' + option.strLocation + '</option>'));
-                        //ddlResponsid3.append($('<option></option>').val(option.strLedgerName).html(option.strLedgerName));
-                    });
-                    $('#ddllocationid').val(selectdata.strLocation);
-                    //$('#responsid3').val(this.aktar);
-                    //$('#ddllocationid').trigger('change');
-                }
-            })
-
-
-        });*@
-
-
-
-        @*$("#responsid2").on("change", function () {
-            //selectBranch = $(this).val();
-            //alert(selectBranch)
-
-            var ddlStockGrouplist = $("#ddlStockGrouplist");
-            $.ajax({
-                url: '@Url.Action("mFillStockGroup")',
-                datatype: "json",
-                data: {
-                    strDeComID: "",
-                    strPrefix: "",
-                    vstrUserName: ""
-                },
-                success: function (data) {
-                    ddlStockGrouplist.html('');
-                    ddlStockGrouplist.append($('<option value=--Select One-->--Select One--</option>'));
-                    $.each(data, function (id, option) {
-                        ddlStockGrouplist.append($('<option value="' + option.strItemGroup + '">' + option.strItemGroup + '</option>'));
-                        //ddlResponsid3.append($('<option></option>').val(option.strLedgerName).html(option.strLedgerName));
-                    });
-
-                }
-            })
-
-        });*@
-
-
-
-
-
-
-        //mloadItem();
         mloadCustomer();
         mloadLocation();
         mloadItemGroup();
@@ -767,7 +698,7 @@
                 ddlStockGrouplist.append($('<option value=--Select One-->--Select One--</option>'));
                 $.each(data, function (id, option) {
                     ddlStockGrouplist.append($('<option value="' + option.strItemGroup + '">' + option.strItemGroup + '</option>'));
-                    //ddlResponsid3.append($('<option></option>').val(option.strLedgerName).html(option.strLedgerName));
+                 
                 });
 
             }
@@ -788,11 +719,10 @@
                 ddllocationid3.append($('<option value=--Select One-->--Select One--</option>'));
                 $.each(data, function (id, option) {
                     ddllocationid3.append($('<option value="' + option.strLocation + '">' + option.strLocation + '</option>'));
-                    //ddlResponsid3.append($('<option></option>').val(option.strLedgerName).html(option.strLedgerName));
+                
                 });
                 $('#ddllocationid').val(selectdata.strLocation);
-                //$('#responsid3').val(this.aktar);
-                //$('#ddllocationid').trigger('change');
+
             }
         })
     }
@@ -800,8 +730,6 @@
 
 
     function mloadCustomer() {
-        //selectMpo = $(this).val();
-
         var selectMpo = document.getElementById("ID_Mpo").value;
         var ddlDoctorlist = $("#idcustomer");
         $.ajax({
@@ -815,12 +743,8 @@
                 ddlDoctorlist.html('');
                 ddlDoctorlist.append($('<option value=--Select One-->--Select One--</option>'));
                 $.each(data, function (id, option) {
-
                     ddlDoctorlist.append($('<option value="' + option.strDoctorName + '">' + option.strCustomerName + '</option>'));
-                    //console.log('rbtnidNeworder',  option.strDoctorName );
                 });
-                //alert("2")
-                //$('#idcustomer').val($('#strDoctorName').val());
                 $('#idcustomer').val(selectdata.strDoctorName);
                 $('#idcustomer').trigger('change');
 
@@ -830,8 +754,6 @@
     };
 
     function commtionCal() {
-
-
             swal({
                 title: "Do You Want to Commission Calculation ?",
                 text: "",
@@ -844,9 +766,6 @@
             }).then(function (isConfirm) {
                 if (isConfirm) {
 
-                    //alert("Alll")
-
-
                     $.ajax({
                         type: "POST",
                         url: "/SalesOrder/mUpdateSalesOrderOnlineComm",
@@ -854,12 +773,11 @@
                         contentType: "application/json; charset=utf-8",
                         dataType: "json",
                         success: function (r) {
-                            //alert(r + " record(s) inserted.");
                         }
                     });
 
                 } else {
-                    //alert("Cancel...")
+  
                 }
             });
 
@@ -880,7 +798,7 @@
     function rbtnidZhApprove() {
         rtbtnStatus();
         showGrid();
-    }
+       }
     function rbtnidReturnOrder() {
         rtbtnStatus();
         console.log('rbtnidNeworder', rbtnStatus);
@@ -888,7 +806,7 @@
     }
     function rbtnidbilldone() {
         rtbtnStatus();
-        showGrid2();
+        showGrid();
     }
     function rtbtnStatus() {
         var radioValue = $("input[name='rbtnname']:checked").val();
@@ -899,25 +817,44 @@
         if (radioValue == "NewInvoice") {
 
             rbtnStatus = 4;
-
+            checkboxColamstatus = true;
+            editColamStatus = true;
+            deleteColamStatus = true;
+            CreditLimitColamStatus = true;
         }
         else if (radioValue == "ZhApprove") {
             rbtnStatus = 3;
+            checkboxColamstatus = false;
+            editColamStatus = true;
+            deleteColamStatus = true;
+            CreditLimitColamStatus = true;
         }
         else if (radioValue == "ReturnOrder") {
             rbtnStatus = 2;
+            checkboxColamstatus = false;
+            editColamStatus = true;
+            deleteColamStatus = true;
+            CreditLimitColamStatus = true;
         }
         else if (radioValue == "BillDone") {
             rbtnStatus = 1;
+            checkboxColamstatus = false;
+            editColamStatus = false;
+            deleteColamStatus = false;
+            CreditLimitColamStatus = false;
         }
         else {
             rbtnStatus = 0;
+            checkboxColamstatus = true;
+            editColamStatus = true;
+            deleteColamStatus = true;
+            CreditLimitColamStatus = true;
         }
     }
 
     function clikRefresh() {
         rbtnStatus = 5;
-        showGrid2();
+        showGrid();
 
 
     }
@@ -928,15 +865,15 @@
         $('#idReturnOrder').prop('checked', false);
         $('#idBillDone').prop('checked', false);
         rbtnStatus = 5;
-        showGrid2();
+        showGrid();
      }
 
     function showGrid() {
         strUserName=   document.getElementById('lblledgerName').textContent
 
-        //alert(strUserName);
 
-        $('#datatable4').DataTable({
+
+        table = $('#datatable4').DataTable({
             "bDestroy": true,
             "select": true,
 
@@ -959,17 +896,6 @@
 
             },
 
-
-            //var tableee = $('#datatable4').DataTable( {
-            //    "scrollY": "200px",
-            //    "paging": false
-            //} );
-
-            //select: {
-            //    style: 'multi',
-            //    selector: 'td:first-child'
-            //},
-
             "order": [[1, 'asc']],
             "columns": [
                   {
@@ -983,9 +909,6 @@
                           return '<span>' + (meta.row + 1) + '</span>';
                       },
                   },
-                //{
-                //    return type == 'export' ? meta.row + 1 : data
-                //},
 
                     {
 
@@ -1055,38 +978,38 @@
                            title: 'Credit Limit',
                            data: 'dblCreditAmount',
                            name: 'dblCreditAmount',
-
+                           "visible": CreditLimitColamStatus,
 
                        },
 
-                   {
-                       title: 'check',
-                       data: 'fcheck',
 
-                       //className: 'select-checkbox sales-sloat-select',
-                       render: function (data, type) {
-                           data.trigger;
+                       {
+                           title: 'Check All' + '<input type="checkbox" id="chkAll" onclick="checkAll(this)">',
+                           data: '',
+                           "visible": checkboxColamstatus,
+                           render: function (data,
+                              type,
+                              row,
+                              meta) {
+                               
+                               return '<input type="checkbox" id="chkSingle' + (meta.row + 1) + '" value= ' + data + '  class="select-checkbox sales-sloat-select"  />';
 
+           
+                           },
+                       },
 
-
-                           return '<input type="checkbox" value= ' + data + ' class="select-checkbox sales-sloat-select" />';
-
-                       }
-
-                   },
-
-
-
-
+                       
 
                               {
-                                  title: 'Edit',
+                                title: 'Edit',
+                                "visible": editColamStatus,
                                   render: function (data, type, row) {
                                       return '<button class="btn btn-info fontsize  sales-sloat-ak">   <i class="fa fa-pencil"></i></button>';
                                   }
                               },
                                 {
                                     title: 'Delete',
+                                    "visible": deleteColamStatus,
                                     render: function (data, type, row) {
                                         return '<button class="btn btn-danger fontsize  delete-sloat-ak"> <i class="fa fa-trash"></i></button>';
                                     }
@@ -1097,7 +1020,7 @@
                                          return '<button class="btn btn-info fontsize  print-sloat-ak">   <i class="fa fa-print"></i></button>';
                                      }
                                  },
-
+                          
             ],
 
             "responsive": true,
@@ -1151,9 +1074,11 @@
                     if (data.fcheck == 0) {
                         data.fcheck = 1;
                         addtoList(selectdata);
+              
                     } else {
                         data.fcheck = 0;
                         delettoList(selectdata);
+                
                     }
                     console.log('hello edit dddeeeee', data.fcheck);
 
@@ -1163,45 +1088,95 @@
 
                 $(row).find(".sales-sloat-ak").click(function () {
                     selectdata = data;
-                    console.log('hello edit dddeeeee', selectdata);
+                    //console.log('hello edit dddeeeee', selectdata);
                     edit(selectdata);
-                    //that.salesss(data);
-                    //that.rerender();
+          
                 });
                 $(row).find(".delete-sloat-ak").click(function () {
                     selectdata = data;
                     console.log('hello Delete data', selectdata);
-                    deleteItemsById(selectdata.lngSlNo)
-                    //that.salesss(data);
-                    //that.rerender();
+                    deleteItemsById(selectdata.strVoucherNoMerz)
+            
                 });
                 $(row).find(".print-sloat-ak").click(function () {
                     selectdata = data;
                     orderprint(selectdata.strVoucherNoMerz, selectdata.strMerzeName)
-                    //that.salesss(data);
-                    //that.rerender();
+            
                 });
 
             }
 
         });
+
+     
+
+
+      
     }
 
 
+    function checkAll(chk) {
+
+        var checked = $('#' + chk.id).prop('checked');
+        //alert(checked)
+        $('#datatable4').each(function (i, val) {
+      
+            $(this).find('.chkSingle').prop('checked', checked);
+            if (checked == true) {
+                $(this).addClass('bg-danger');
+                console.log(i, selectData);
+            }
+            else {
+                $(this).removeClass('bg-success');
+               
+            }
+        });
+    }
+
+    function App() {
+
+        var empObj = {
+
+
+            detailsList: finalList,
+
+        };
+        console.log("Order master and details list", empObj);
+
+        $.ajax({
+            url: "/SalesOrder/mpoApprove",
+            type: "POST",
+            data: JSON.stringify(empObj),
+            contentType: "application/json;charset=utf-8",
+            dataType: "json",
+            success: function (result) {
+
+     
+                if (result == "OK") {
+
+                 
+                } else {
+         
+                };
+
+                showGrid();
+
+            }
+        });
 
 
 
+
+
+
+ 
+    }
     var selectList = [];
 
     function orderprint(strVNo, strMerzeNamee) {
         var ddlVal = $('#exportOption').val();
-        //alert(ddlVal)
-
         console.log('voucher No', strVNo)
         console.log('voucher led', strMerzeNamee)
-        //var x = document.getElementById("bloodgId").value;
-        //alert(x)
-
         window.open(
     "/RptSO/RptNewOrder?strVoucherNO=" + encodeURIComponent(strVNo) + " &vstrLedgerName=" + strMerzeNamee+"&exportOpt=" + ddlVal,
     '_blank' // <- This is what makes it open in a new window.
@@ -1279,10 +1254,6 @@
                 }
 
             }
-
-
-            //console.log('check strue', countt);
-
         }
 
 
@@ -1296,23 +1267,15 @@
 
         mloadCustomer();
 
-
-
-
         $('#idcustomer').val(selectdata.strDoctorName);
-        //$('#idcustomer').trigger('change');
 
         mloadLocation();
 
         $('#ddllocationid').val(selectdata.strLocation);
         $('#OrDate').val(selectdata.strTranDate);
-        //alert(selectdata.strTranDate)
+        
         $('#ID_OrderNumber').val(selectdata.strVoucherNo);
 
-        //idcustomer
-
-
-        //mloadCustomer(selectdata.strVoucherNo)
         mloadOrderDetails(selectdata.strVoucherNo)
         $('#btnsaveOrder').val("Update");
         $('#btnsaveOrder').val("Update");
@@ -1320,28 +1283,6 @@
 
     }
 
-    //function mloadCustomer(OrderNO) {
-    //    //$('#ID_OrderNumber').val(selectdata.strVoucherNo);
-
-    //    var empObj = {
-    //        strOrderNo: OrderNO,
-    //    };
-    //    $.ajax({
-    //        url: "/SalesOrder/mloadCusotmer",
-    //        data: JSON.stringify(empObj),
-    //        type: "POST",
-    //        contentType: "application/json;charset=utf-8",
-    //        dataType: "json",
-    //        success: function (strLocation) {
-    //            strLocatioandd = strLocation;
-    //            console.log('1');
-    //            console.log('1st-', strLocatioandd);
-    //            //$('#ddllocationid').val(data);
-    //            //$('#ddllocationid').val(selectdata.strDoctorName);
-    //            //$('#idcustomer').trigger('change');
-    //        }
-    //    });
-    //}
     function mloadOrderDetails(OrderNO) {
         var empObj = {
             strOrderNo: OrderNO,
@@ -1361,15 +1302,14 @@
 
 
 
-                console.log('hello edit',tempDataList);
-                //console.log('hello edit New', data);
-                //showItemview(data);
+                //console.log('hello edit','');
+    
                 showItemview();
+                //counttotalAmount();
             }
         });
     }
     function deleteItem(itemName) {
-        //console.log("before delete"+tempDataList.length);
 
         for (i = 0; i < tempDataList.length; i++) {
             if (tempDataList[i].strItemName == itemName) {
@@ -1378,52 +1318,29 @@
             }
 
         }
-        //console.log("after delete" + tempDataList.length);
+
         showItemview();
     }
 
-
     function locationListByItemId(id) {
-
-
         $.ajax({
             url: "/Item/locationListByItemId?id=" + id,
-            //data: JSON.stringify(empObj),
             type: "POST",
             contentType: "application/json;charset=utf-8",
             dataType: "json",
             success: function (result) {
-                //alert("result ",result)
                 gLocationList = result;
-
                 if (gLocationList.length > 0) {
-
                     showlocationlview();
-                    //calculateData();
                 }
-
-
-
             }
         });
 
     }
-    function calculateRate() {
-
-        //itemRate = $('#intRate').val();
-        //itemQty = $('#intQty').val();
-        ////alert(itemQty)
-        //itemAmount = itemRate * itemQty;
-        ////alert(itemAmount)
-        //$("#itemAmount").val(itemAmount);
-        //console.log(itemRate, itemQty, itemAmount);
-
-    }
     function deleteItemsById(id) {
-
+        alert(id)
         $.ajax({
-            url: "/Item/deleteItemById?id=" + id,
-            //data: JSON.stringify(empObj),
+            url: "/SalesOrder/deleteItemById?voucherNo=" + id ,
             type: "POST",
             contentType: "application/json;charset=utf-8",
             dataType: "json",
@@ -1440,95 +1357,11 @@
 
     }
 
-
-
-
-
-    function addOrEditItem() {
-
-     //var   btn = $('#btnsaveOrder').val();
-
-        var OrderDate = $('#OrDate').val();
-        if (OrderDate == undefined || OrderDate == null || OrderDate == "") {
-            swal('Required!!!', 'Required Order Date', 'warning')
-            return;
-        }
-        var order_date = $('#OrDate').val();
-
-        var selectedItem = $('#ddlStockItemlist').val();
-
-
-
-        var addStaus = "";
-
-
-
-        $.each(addItemList, function (key, itemddd) {
-            console.log('new list add item', gItemList);
-            //debugger
-            var aa = $('#ddlStockItemlist').val();
-                //alert(aa);
-                //alert(itemddd.strItemName);
-                if (itemddd.strItemName == aa) {
-
-                    //alert(a);
-                    addStaus = 'True';
-                    return
-                }
-
-
-        });
-
-        //for (var i = 0; i < gItemList.length; i++) {
-
-        //    var aa = $('#ddlStockItemlist').val();
-
-        //    if (gItemList.strItemName == aa) {
-        //        alert(gItemList.strItemName);
-        //        addStaus = 'True';
-        //        return
-        //    }
-        //}
-
-
-        var obj = {
-            "flammable": "inflammable",
-            "duh": "no duh"
-        };
-        $.each(obj, function (key, value) {
-            //alert(key + ": " + value);
-        });
-
-        if (addStaus=='True')
-        {
-            swal("Adding Failed!", "You Alrady Add This Item.", "warning");
-        }
-        else {
-
-            itemRate('0003', $('#ddlStockGrouplist').val(), $('#ddlStockItemlist').val(), order_date, $('#intQty').val(), $('#ID_Branch').val());
-
-
-        }
-
-
-
-
-    }
-
     function clearitem() {
         $('#intQty').val("");
         $("#ddlStockItemlist").val('').trigger('change')
-        //ddlStockItemlist.html('');
-        //$('#ddlStockItemlist').val("");
-        //$("#ddlStockItemlist").select2("val", "");
-        //document.getElementById("ddlStockItemlist").innerHTML = "";
     }
     function itemRate(strComid, strItemGroup, strItemName, strOrderDate, intQty, strBranchName) {
-
-
-
-
-
         $.ajax({
             url: '@Url.Action("gFillStockItemRate")',
             datatype: "json",
@@ -1546,13 +1379,10 @@
                 this.strPowerClassGet = data.strPowerClass;
                 this.strPackSizeGet = data.strPackSize;
                 this.dblItemRatesGet = data.dblBranchRate;
-                //this.strUnitGet = data.strUnit;
                 this.intBonusQtyGet = data.dblbonusQty;
                 this.strSubGroup_NameGet = data.strSubGroup_Name;
 
                 var result = false;
-
-
 
                     addItemList.push({
                         strItemGroup: $('#ddlStockGrouplist').val(),
@@ -1563,16 +1393,11 @@
                         intItemQty: $('#intQty').val(),
                         dblItemRate: this.dblItemRatesGet,
                         strUnit: this.strUnitGet,
-                        //dblCommission: this.dblcom,
                         intBonusQty: this.intBonusQtyGet,
                         dblTotalAmount: $('#intQty').val() * this.dblItemRatesGet,
                         strCustomer: $('#idcustomer').val(),
                         strDate: $('#OrDate').val()
                     });
-
-                //debugger detailsList
-
-
                 $.ajax({
                     type: "POST",
                     url: "/SalesOrder/CommossionCalculet",
@@ -1580,32 +1405,21 @@
                     contentType: "application/json; charset=utf-8",
                     dataType: "json",
                     success: function (data) {
-                           //gItemList = [];
                            gItemList.push(data);
-
-
-                        //showItemview(data);
-
                            tempDataList = data;
                            showItemview();
                     }
 
                 });
                 console.log('list', gItemList);
-                //commissionCal();
-                //showItemview();
-
 
             }
 
         })
-         //return type;
     }
 
     function showItemview() {
-        //TotalQty(gItemList);
-        console.log(tempDataList);
-
+        //console.log(tempDataList);
         intItemQty = 0;
         totalAmount = 0;
         totalcommision = 0;
@@ -1613,7 +1427,6 @@
 
         this.detailsList = this.tempDataList;
 
-        //calculateData(detailsList);
         $('#itemDatatable').DataTable({
             data: this.tempDataList,
             "bDestroy": true,
@@ -1626,9 +1439,6 @@
                 console.log('request.responseText', response);
                 return response;
             },
-
-
-            //"scrollX": true,
             "select": true,
             columns: [
 
@@ -1645,8 +1455,6 @@
                     "visible": false,
                 },
 
-                    //{ title: 'Location Name', data: 'strLocation' },dblPercent
-
                         { title: 'Sub Group', data: 'strSubGroup_Name' , "visible": false,},
                         { title: 'Per', data: 'dblPercent', "visible": false, },
                         { title: 'Group Name', data: 'strItemGroup' },
@@ -1662,12 +1470,6 @@
                         { title: 'Bonus Qty', data: 'intBonusQty' },
                         { title: 'Net Amount', data: 'dblItemNetVal', width: 100 },
 
-                         //{
-                         //    title: 'Edit',
-                         //    render: function (data, type, row) {
-                         //        return '<button type="button"   class="btn btn-info fontsize  sales-sloat-ak">Edit</button>';
-                         //    }
-                         //},
                         {
                             title: 'Delete',
                             render: function (data, type, row) {
@@ -1687,37 +1489,30 @@
                 //totalnetamount = totalnetamount + data.dblItemNetVal;
 
 
-                document.getElementById("qtyTotal").innerHTML = intItemQty;
-                document.getElementById("txtTotalAmount").innerHTML = totalAmount;
-                document.getElementById("txtCommAmount").innerHTML = totalcommision;
-                document.getElementById("txtnetAmount").innerHTML = totalnetamount;
+                //document.getElementById("qtyTotal").innerHTML = intItemQty;
+                //document.getElementById("txtTotalAmount").innerHTML = totalAmount;
+                //document.getElementById("txtCommAmount").innerHTML = totalcommision;
+                //document.getElementById("txtnetAmount").innerHTML = totalnetamount;
 
                 $(row)
                  .bind('click')
                  .click(function () {
 
                      selectlocationItem = data;
-                     //console.log('hello delete dataddddddddd', selectlocationItem);
-                     //rerender();
                  });
                 $(row).find(".sales-sloat-ak").click(function () {
                     selectlocationItem = data;
                     editLocation(selectlocationItem);
-                    //that.salesss(data);
-                    //that.rerender();
                 });
                 $(row).find(".delete-sloat-ak").click(function () {
                     selectlocationItem = data;
                     console.log('hello kkk', selectlocationItem);
                     deleteItem(selectlocationItem.strItemName);
-
-                    //that.salesss(data);
-                    //that.rerender();
                 });
 
             }
         });
-        clearitem();
+        //clearitem();
     }
     function saveOrUpdates() {
         var btn = $('#btnsaveOrder').val()
@@ -1726,23 +1521,13 @@
 
         } else {
 
-            //console.log('request.responseText', selectdata);
             UpdateData();
         }
 
     }
     function saveData() {
 
-        //alert(brandId);
-
-        //alert(brandName);
         jQuery.ajaxSettings.traditional = true;
-        //var list = [];
-        //list = gItemList;
-
-
-
-
         console.log('list list', this.detailsList);
 
         var empObj = {
@@ -1751,7 +1536,6 @@
             strBranchName: $('#responsid2').val(),
             strCustomer: $('#idcustomer').val(),
             strLedgerName: $('#ID_Mpo').val(),
-            //strOrderNo: $('#ID_OrderNumber').val(),
             strOrderNo: 'SO0001' + $('#ID_OrderNumber').val(),
             strOrderDate: $('#OrDate').val(),
             strLocation: $('#ddllocationid').val(),
@@ -1772,18 +1556,31 @@
             contentType: "application/json;charset=utf-8",
             dataType: "json",
             success: function (result) {
+                if (result == "OK") {
 
-                //alert(result);
-                if (result != "error") {
+                    var toastMixin = Swal.mixin({
+                        toast: true,
+                        icon: 'success',
+                        title: 'General Title',
+                        animation: false,
+                        position: 'center',
+                        showConfirmButton: false,
+                        timer: 2000,
+                        timerProgressBar: true,
 
 
-                    var idd = result;
-                    saveimage(idd);
-                    $('#itemModal').modal('hide');
+                    });
+
+
+
+                    toastMixin.fire({
+                        animation: true,
+                        title: 'Save Successfully',
+
+                    });
                     clearFromData();
                     showGrid();
                 } else {
-                    //alert("resutl is ", result);
                 };
 
             }
@@ -1791,72 +1588,28 @@
     }
 
     function clearFromData() {
-
-
-        //strBranchName: $('#responsid2').val(),
-        //strCustomer: $('#idcustomer').val(),
-        //strLedgerName: $('#ID_Mpo').val(),
-        //strOrderNo: $('#ID_OrderNumber').val(),
-        //strOrderDate: $('#OrDate').val(),
-        //strLocation: $('#ddllocationid').val(),
-        //dblTotalAmount: $('#txtTotalAmount').text(),
-        //dblCommitionVal: $('#txtCommAmount').text(),
-        //dblNetTotal: $('#txtnetAmount').text(),
-        //strNaration: $('#strNaration').val(),
-        //dblNetQty: $('#qtyTotal').text(),
-        //detailsList: this.detailsList,
-
         console.log('Clear','ok')
-        //$('#idcustomer').val('');
         $('#idcustomer').val();
         tempDataList = [];
+        addItemList = [];
         $('#btnsaveOrder').val("Save");
         showItemview();
-
-        //$('#idcustomer').text("");
-        //$('#responsid3').text("");
-        ////$('#ID_OrderNumber').text("");
-        ////$('#OrDate').val("");
-        ////$('#ddllocationid').text("");
-        //$('#btnsaveOrder').val("Save")
-        //$('#txtCommAmount').val("");
-        //$('#strNaration').val("");
-        //$('#itemDatatable').dataTable().fnClearTable();
-        //orderdate();
-
-            //document.getElementById("Totalitem").innerHTML = 0;
-            //document.getElementById("qtyTotal").innerHTML = 0;
-            //document.getElementById("txtTotalAmount").innerHTML = 0;
-            //document.getElementById("txtCommAmount").innerHTML = 0;
-            //document.getElementById("txtnetAmount").innerHTML = 0;
-
 
     }
 
     function orderdate()
     {
-
-
         var _dt = new Date();
 
         console.log(new Date(_dt).toLocaleString().split(',')[0]);
-
-        //var datev=  (new Date(date).toLocaleString().split(',')[0]);
-        //document.getElementById('OrDate').value = new Date(date).toLocaleString('en-US').split(',')[0];
         console.log([_dt.getDate(), _dt.getMonth(), _dt.getFullYear()]);
         document.getElementById('OrDate').value = [_dt.getDate(), _dt.getMonth() + 1, _dt.getFullYear()].join('/')
     }
     function UpdateData() {
-
-        //alert('lskdjfl');
         var list = [];
-        //list = gLocationList;
         console.log('list list', list);
         var empObj = {
-
             lngSlNo: lngSlNo,
-
-
             strBranchName: $('#responsid2').val(),
             strCustomer: $('#idcustomer').val(),
             strLedgerName: $('#ID_Mpo').val(),
@@ -1879,15 +1632,28 @@
             dataType: "json",
             success: function (result) {
 
-                if (result == "Ok") {
-                    var idd = result;
-                    saveimage(idd);
-                    $('#itemModal').modal('hide');
-                    //cleardatda();
-                    //showGrid();
+                if (result == "Updated") {
+                    console.log('Update')
+
+                    var toastMixin = Swal.mixin({
+                        toast: true,
+                        icon: 'success',
+                        title: 'General Title',
+                        animation: false,
+                        position: 'center',
+                        showConfirmButton: false,
+                        timer: 2000,
+                        timerProgressBar: true,
+                    });
+                        toastMixin.fire({
+                            animation: true,
+                            title: 'Update Successfully',
+                        });
+             
+                        clearFromData();
+
                 } else {
                     cleardatda();
-                    //alert("resutl sssssis ", result);
                 };
             }
         });
@@ -1895,14 +1661,12 @@
 
     }
 
-    //function calculateData(gItemList) {
+    //function counttotalAmount() {
     //    var qtyTotalll = 0;
-    //    console.log('data check', gItemList)
+    //    console.log('data check', tempDataList)
     //    if (gItemList.length === 0) {
-    //        for (i = 0; i < gItemList.length; i++) {
-    //            qtyTotalll += parseInt(gItemList[i].intItemQty);
-
-
+    //        for (i = 0; i < tempDataList.length; i++) {
+    //            qtyTotalll += parseInt(tempDataList[i].intItemQty);
     //        }
     //        alert(qtyTotalll);
     //        document.getElementById("qtyTotal").innerHTML = qtyTotalll;

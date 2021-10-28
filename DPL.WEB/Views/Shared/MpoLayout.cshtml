@@ -30,20 +30,39 @@
     <link href="~/Content/bootstrap.css" rel="stylesheet" />
     <link href="https://cdn.datatables.net/1.10.15/css/dataTables.bootstrap.min.css" rel="stylesheet" />
     <link href="https://cdn.datatables.net/responsive/2.1.1/css/responsive.bootstrap.min.css" rel="stylesheet" />
+    @* ---Sweetalert tost--*@
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@7.12.15/dist/sweetalert2.min.css" rel="stylesheet" />
+    @* ---End Sweetalert tost--*@
 
 
-
-
-    <link href="~/Content/navbar.css" rel="stylesheet" />
+    <link href="~ />Content/navbar.css" rel="stylesheet" />
     <link href="~/Content/databackcolor.css" rel="stylesheet" />
     <link href="~/Content/rbtnStyle.css" rel="stylesheet" />
 
 
+
     <script src="~/Scripts/jquery-3.6.0.js"></script>
     <script src="~/Scripts/jquery-3.6.0.min.js"></script>
+    @* ---Sweetalert tost--*@
+    <style>
+        button {
+            background: cornflowerblue;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 8px;
+            font-family: 'Lato';
+            margin: 5px;
+            text-transform: uppercase;
+            cursor: pointer;
+            outline: none;
+        }
 
-
-
+            button:hover {
+                background: orange;
+            }
+    </style>
+    @* ---End Sweetalert--*@
     @*<style>
             /*.fa-file-invoice-dollar {
                 color: blue;
@@ -86,9 +105,7 @@
                 </li>
             </ul>
             <!-- Right navbar links -->
-            <ul class="navbar-nav ml-auto align-items-center">
-                
-            </ul>
+            <ul class="navbar-nav ml-auto align-items-center"></ul>
             <ul class="navbar-nav ml-auto">
 
                 <!-- Messages Dropdown Menu -->
@@ -127,15 +144,15 @@
                         <a href="#"
                            class="dropdown-item">
                             <i class="icon fa fa-lock"></i>Change Password
-                        </a> 
+                        </a>
                         @*<a onclick="logout()" class="dropdown-item">*@
 
-                      @*  <a href="/LogIn/LogIn" class="dropdown-item"><i class="icon fa fa-key"></i>Log Out</a>*@
+                        @*  <a href="/LogIn/LogIn" class="dropdown-item"><i class="icon fa fa-key"></i>Log Out</a>*@
 
                         <a href="/LogIn/LogIn" id="logout" class="dropdown-item" name="">Sign out</a>
                     </div>
                 </li>
-                
+
 
                 <li class="nav-item">
                     <a class="nav-link" data-widget="fullscreen" href="#" role="button">
@@ -233,9 +250,9 @@
                                 </li>
 
                             </ul>
-                       
-                               
-                           
+
+
+
 
                         </li>
 
@@ -283,7 +300,7 @@
                     <!-- /.row (main row) -->
                 </div><!-- /.container-fluid -->
             </section>
-           
+
             <!-- /.content -->
         </div>
         <!-- /.content-wrapper -->
@@ -338,8 +355,10 @@
     @* ---Sweetalert--*@
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     <script src="~/Scripts/jsTree3/jstree.min.js"></script>
-
-
+    @* ---Sweetalert tost--*@
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10.10.1/dist/sweetalert2.all.min.js"></script>
+    @* ---end Sweetalert--*@
+    @*<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>*@
 
 
 
@@ -379,23 +398,6 @@
             }
         });
 
-
-
-            //console.log('logout', 'ok');
-            //$.ajax({
-       
-            //    url: "/LogIn/LogIn,
-            //    type: "POST",
-            //contentType: "application/json;charset=utf-8",
-            //dataType: "json",
-
-            //    success: function (data) {
-
-
-            //    }
-            //})
-
-
-        }
+    }
 
 </script>

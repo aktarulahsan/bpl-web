@@ -24,8 +24,14 @@ namespace DPL.WEB.Areas.Transaction.Controllers
         {
 
             ViewBag.BranchName = mGetBranch();
-            ViewBag.RefNo = Utility.gstrLastNumber("0003", 12);
+            //ViewBag.RefNo = Utility.gstrLastNumber("0003", 12);
             return View();
+        }
+
+        public ActionResult LastOrderNO()
+        {
+
+            return Json(Utility.gstrLastNumber("0003", 12), JsonRequestBehavior.AllowGet);
         }
        //[AuthorizationFilter]
         public ActionResult Logout()
@@ -75,7 +81,7 @@ namespace DPL.WEB.Areas.Transaction.Controllers
                 ViewBag.MNameMerz = strLedgerNameMearz;
                 ViewBag.BranchName = strBranchName;
                 ViewBag.RefNo = Utility.gstrLastNumber("0003", 12);
-                return View("MpoView");
+                return View();
             }
             else
             {
@@ -777,7 +783,7 @@ namespace DPL.WEB.Areas.Transaction.Controllers
                             {
                                 //New order
                                 strSQL = strSQL + "AND ACC_COMPANY_VOUCHER_BRANCH_VIEW.APPS_COMM_CAL IN(0)  ";
-                                strSQL = strSQL + "AND APP_STATUS=1  ";
+                                strSQL = strSQL + "AND APP_STATUS=0  ";
                                 strSQL = strSQL + "AND ACC_COMPANY_VOUCHER_BRANCH_VIEW.COMP_VOUCHER_STATUS= 0  ";
                             }
                             if (intStatusCol == 5)
@@ -1576,15 +1582,121 @@ namespace DPL.WEB.Areas.Transaction.Controllers
 
         }
 
+
+
+        [HttpPost]
+        public ActionResult deleteItemById(string voucherNo)
+        {
+            string strSQL = "";
+
+            string connectionString = WebConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString;
+            using (SqlConnection gcnMain = new SqlConnection(connectionString))
+            {
+                if (gcnMain.State == ConnectionState.Open)
+                {
+                    gcnMain.Close();
+                }
+                try
+                {
+                    gcnMain.Open();
+
+
+                    SqlCommand cmdDelete = new SqlCommand();
+                    SqlTransaction myTrans;
+                    myTrans = gcnMain.BeginTransaction();
+                    cmdDelete.Connection = gcnMain;
+                    cmdDelete.Transaction = myTrans;
+
+                    strSQL = "DELETE FROM ACC_COMPANY_VOUCHER ";
+                    strSQL = strSQL + "WHERE COMP_REF_NO = '" + voucherNo + "' ";
+                    cmdDelete.CommandText = strSQL;
+                    cmdDelete.ExecuteNonQuery();
+
+                    cmdDelete.Transaction.Commit();
+                    gcnMain.Close();
+
+                    return Json("OK", JsonRequestBehavior.AllowGet);
+                }
+
+                catch (Exception ex)
+                {
+
+                    return Json("Error", JsonRequestBehavior.AllowGet);
+                }
+                finally
+                {
+                    gcnMain.Close();
+                }
+
+            }
+
+        }
+
+        public JsonResult mpoApprove(OrderMaster gItemList)
+        {
+            string strSQL = "";
+            long lngBillPosition = 1, lngloop = 1;
+            string connectionString = WebConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString;
+            using (SqlConnection gcnMain = new SqlConnection(connectionString))
+            {
+                if (gcnMain.State == ConnectionState.Open)
+                {
+                    gcnMain.Close();
+                }
+
+                try
+                {
+                    gcnMain.Open();
+
+                    SqlCommand cmdInsert = new SqlCommand();
+                    SqlTransaction myTrans;
+                    myTrans = gcnMain.BeginTransaction();
+                    cmdInsert.Connection = gcnMain;
+                    cmdInsert.Transaction = myTrans;
+
+                    for (int i = 0; i < gItemList.detailsList.Count; i++)
+                    {
+
+                        strSQL = "UPDATE ACC_COMPANY_VOUCHER SET APP_STATUS=1,APPS_COMM_CAL=1,ORDER_DATE= " + Utility.cvtSQLDateString(gItemList.detailsList[i].strTranDate) + " WHERE COMP_REF_NO='" + gItemList.detailsList[i].strVoucherNoMerz + "' ";
+                        cmdInsert.CommandText = strSQL;
+                        cmdInsert.ExecuteNonQuery();
+                        lngBillPosition += 1;
+                        lngloop += 1;
+
+                    }
+
+
+                    cmdInsert.Transaction.Commit();
+
+
+
+
+                    gcnMain.Close();
+                    return Json("OK", JsonRequestBehavior.AllowGet);
+                }
+                catch (Exception ex)
+                {
+                    return Json(ex.ToString(), JsonRequestBehavior.AllowGet);
+                }
+                finally
+                {
+                    gcnMain.Close();
+
+
+                }
+
+            }
+        }
+        
         #region "Sales Order Save"
 
-        public string msaveSalesOrder(OrderMaster gItemList)
+        public JsonResult msaveSalesOrder(OrderMaster gItemList)
         {
             string strSQL = "", strMonthID = "", strBranchId = "0001", strPrepareBy = "MISK";
             string strBillKey = "", strItemName = "", strPer = "", strBatchNo = "", strGroupName = "", strsubFroup = "";
             long lngBillPosition = 1, lngloop = 1;
             double dblqty = 0, dblRate = 0, dblDebitValue, dblbonus = 0, dblCommPer = 0, dblCommAmnt = 0, dblTotalamnt;
-            int mlngVType = 12, intAppStatus = 1;
+            int mlngVType = 12, intAppStatus = 0;
             string connectionString = WebConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString;
             using (SqlConnection gcnMain = new SqlConnection(connectionString))
             {
@@ -1664,12 +1776,13 @@ namespace DPL.WEB.Areas.Transaction.Controllers
 
 
                     gcnMain.Close();
-                    return "Inserted...";
+                    return Json("OK", JsonRequestBehavior.AllowGet);
 
                 }
                 catch (Exception ex)
                 {
-                    return (ex.ToString());
+                   
+                    return Json(ex.ToString(), JsonRequestBehavior.AllowGet);
                 }
                 finally
                 {
@@ -1680,7 +1793,7 @@ namespace DPL.WEB.Areas.Transaction.Controllers
         }
         #endregion
         #region "Sales Order Update"
-        public string mUpdateSalesOrder(OrderMaster gItemList)
+        public JsonResult mUpdateSalesOrder(OrderMaster gItemList)
         {
             string strSQL = "", strMonthID = "", strBranchId = "0001", strPrepareBy = "MISK", strRefNo = "";
             string strBillKey = "", strItemName = "", strPer = "", strBatchNo = "", strGroupName = "", strsubFroup = "";
@@ -1710,7 +1823,7 @@ namespace DPL.WEB.Areas.Transaction.Controllers
                     strSQL = "DELETE FROM ACC_BILL_TRAN WHERE COMP_REF_NO = '" + gItemList.strOrderNo + "'";
                     cmdInsert.CommandText = strSQL;
                     cmdInsert.ExecuteNonQuery();
-                    strSQL = "DELETE FROM ACC_BILL_TRAN_PROCESS WHERE COMP_REF_NO = '" + gItemList.strRefNo + "'";
+                    strSQL = "DELETE FROM ACC_BILL_TRAN_PROCESS WHERE COMP_REF_NO = '" + gItemList.strOrderNo + "'";
                     cmdInsert.CommandText = strSQL;
                     cmdInsert.ExecuteNonQuery();
                     strMonthID = Convert.ToDateTime(gItemList.strOrderDate).ToString("MMMyy");
@@ -1860,13 +1973,13 @@ namespace DPL.WEB.Areas.Transaction.Controllers
 
 
                     gcnMain.Close();
-                    return "Updated...";
-
+            
+                    return Json("Updated", JsonRequestBehavior.AllowGet);
                 }
                 catch (Exception ex)
                 {
-
-                    return (ex.ToString());
+                    return Json(ex.ToString(), JsonRequestBehavior.AllowGet);
+          
                 }
                 finally
                 {
